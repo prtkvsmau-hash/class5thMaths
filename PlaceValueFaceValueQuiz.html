@@ -1,0 +1,1941 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Place Value & Face Value Quiz 🎓</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Nunito:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ======================================================
+       THEME VARIABLES
+    ====================================================== */
+    :root {
+      --bg:            #eef2ff;
+      --bg2:           #dde5ff;
+      --card:          #ffffff;
+      --card2:         #f5f7ff;
+      --primary:       #6366f1;
+      --primary-d:     #4f46e5;
+      --primary-l:     #c7d2fe;
+      --secondary:     #f97316;
+      --secondary-l:   #fde8d4;
+      --accent:        #fbbf24;
+      --accent-l:      #fef3c7;
+      --success:       #10b981;
+      --success-l:     #d1fae5;
+      --danger:        #ef4444;
+      --danger-l:      #fee2e2;
+      --info:          #3b82f6;
+      --info-l:        #dbeafe;
+      --text:          #1e293b;
+      --text2:         #475569;
+      --text3:         #94a3b8;
+      --border:        #e2e8f0;
+      --shadow:        0 4px 20px rgba(99,102,241,.12);
+      --shadow-lg:     0 10px 40px rgba(99,102,241,.18);
+      --r:             16px;
+      --r-sm:          8px;
+      --r-lg:          24px;
+      --transition:    .3s cubic-bezier(.4,0,.2,1);
+    }
+    [data-theme="dark"] {
+      --bg:            #0f172a;
+      --bg2:           #1e293b;
+      --card:          #1e293b;
+      --card2:         #0f172a;
+      --primary:       #818cf8;
+      --primary-d:     #6366f1;
+      --primary-l:     #312e81;
+      --secondary:     #fb923c;
+      --secondary-l:   #431407;
+      --accent:        #fbbf24;
+      --accent-l:      #451a03;
+      --success:       #34d399;
+      --success-l:     #064e3b;
+      --danger:        #f87171;
+      --danger-l:      #450a0a;
+      --info:          #60a5fa;
+      --info-l:        #1e3a5f;
+      --text:          #f1f5f9;
+      --text2:         #cbd5e1;
+      --text3:         #64748b;
+      --border:        #334155;
+      --shadow:        0 4px 20px rgba(0,0,0,.35);
+      --shadow-lg:     0 10px 40px rgba(0,0,0,.5);
+    }
+
+    /* ======================================================
+       RESET & BASE
+    ====================================================== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      transition: background var(--transition), color var(--transition);
+      overflow-x: hidden;
+    }
+    h1,h2,h3,h4 { font-family: 'Baloo 2', cursive; }
+    button { cursor: pointer; border: none; outline: none; font-family: 'Nunito', sans-serif; }
+    input, select, textarea { font-family: 'Nunito', sans-serif; outline: none; border: none; }
+    strong { font-weight: 700; color: var(--primary); }
+    .hidden { display: none !important; }
+
+    /* Decorative background blobs */
+    body::before, body::after {
+      content: '';
+      position: fixed;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
+      transition: background var(--transition);
+    }
+    body::before {
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, var(--primary-l), transparent 70%);
+      top: -100px; left: -100px; opacity: .5;
+    }
+    body::after {
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, var(--secondary-l), transparent 70%);
+      bottom: -80px; right: -80px; opacity: .5;
+    }
+
+    /* ======================================================
+       LAYOUT WRAPPER
+    ====================================================== */
+    #app {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ======================================================
+       TOP HEADER BAR
+    ====================================================== */
+    #top-bar {
+      position: sticky; top: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 24px;
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      transition: background var(--transition), border-color var(--transition);
+      gap: 12px;
+    }
+    #top-bar .logo {
+      font-family: 'Baloo 2', cursive;
+      font-size: 1.3rem; font-weight: 800;
+      color: var(--primary);
+      display: flex; align-items: center; gap: 8px;
+      white-space: nowrap;
+    }
+    #top-bar .logo span { font-size: 1.5rem; }
+    #quiz-header-info {
+      display: flex; align-items: center; gap: 16px;
+      flex-wrap: wrap; justify-content: center;
+    }
+    #quiz-header-info .stat-badge {
+      display: flex; align-items: center; gap: 5px;
+      background: var(--bg2); border-radius: 50px;
+      padding: 5px 12px; font-size: .82rem; font-weight: 600;
+      color: var(--text2); transition: background var(--transition);
+    }
+    #quiz-header-info .stat-badge .icon { font-size: 1rem; }
+    #timer-badge { color: var(--secondary) !important; }
+    #timer-badge.warning { color: var(--danger) !important; animation: pulse 1s infinite; }
+
+    /* Theme Toggle */
+    #theme-toggle {
+      display: flex; align-items: center; gap: 8px;
+      background: var(--bg2); border-radius: 50px;
+      padding: 6px 14px; font-size: .82rem; font-weight: 600;
+      color: var(--text2); cursor: pointer;
+      border: 1.5px solid var(--border);
+      transition: all var(--transition);
+      white-space: nowrap;
+    }
+    #theme-toggle:hover { background: var(--primary-l); color: var(--primary); }
+    #theme-toggle .toggle-icon { font-size: 1.1rem; transition: transform .4s; }
+    [data-theme="dark"] #theme-toggle .toggle-icon { transform: rotate(20deg); }
+
+    /* ======================================================
+       MAIN CONTENT AREA
+    ====================================================== */
+    #main { flex: 1; padding: 32px 20px 60px; max-width: 780px; margin: 0 auto; width: 100%; }
+
+    /* ======================================================
+       SCREEN SECTIONS
+    ====================================================== */
+    .screen { animation: fadeIn .45s ease both; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ======================================================
+       HERO CARD (Intro)
+    ====================================================== */
+    .hero-card {
+      background: linear-gradient(135deg, var(--primary) 0%, #8b5cf6 100%);
+      border-radius: var(--r-lg);
+      padding: 36px 32px;
+      text-align: center; color: #fff;
+      margin-bottom: 28px;
+      box-shadow: 0 8px 32px rgba(99,102,241,.35);
+    }
+    .hero-card .trophy { font-size: 3.5rem; display: block; margin-bottom: 10px; }
+    .hero-card h1 { font-size: 2rem; font-weight: 800; line-height: 1.2; margin-bottom: 8px; }
+    .hero-card p { opacity: .9; font-size: 1rem; max-width: 480px; margin: 0 auto; }
+
+    /* ======================================================
+       FORM CARD
+    ====================================================== */
+    .form-card {
+      background: var(--card);
+      border-radius: var(--r);
+      padding: 32px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      transition: background var(--transition), border-color var(--transition);
+    }
+    .form-card h2 { font-size: 1.4rem; margin-bottom: 22px; color: var(--text); display: flex; align-items: center; gap: 8px; }
+
+    .form-group { margin-bottom: 18px; }
+    .form-group label {
+      display: block; margin-bottom: 7px;
+      font-size: .9rem; font-weight: 700; color: var(--text2);
+      letter-spacing: .02em;
+    }
+    .form-group label .req { color: var(--danger); margin-left: 3px; }
+    .form-control {
+      width: 100%; padding: 12px 16px;
+      background: var(--bg2); color: var(--text);
+      border: 2px solid var(--border);
+      border-radius: var(--r-sm);
+      font-size: .95rem; font-weight: 500;
+      transition: border-color var(--transition), background var(--transition), box-shadow var(--transition);
+    }
+    .form-control:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-l);
+      background: var(--card);
+    }
+    .form-control::placeholder { color: var(--text3); }
+    select.form-control { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M6 8L0 0h12z' fill='%236366f1'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 16px center; padding-right: 40px; }
+
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 16px; }
+
+    /* ======================================================
+       BUTTONS
+    ====================================================== */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 12px 26px; border-radius: 50px;
+      font-size: .95rem; font-weight: 700;
+      transition: all var(--transition);
+      white-space: nowrap;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-d) 100%);
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(99,102,241,.4);
+    }
+    .btn-primary:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(99,102,241,.5); }
+    .btn-primary:disabled { opacity: .55; cursor: not-allowed; transform: none; box-shadow: none; }
+    .btn-secondary {
+      background: var(--card2);
+      color: var(--text2);
+      border: 2px solid var(--border);
+    }
+    .btn-secondary:hover { background: var(--bg2); border-color: var(--primary); color: var(--primary); }
+    .btn-success {
+      background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(16,185,129,.4);
+    }
+    .btn-success:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(16,185,129,.5); }
+    .btn-danger {
+      background: linear-gradient(135deg, var(--danger) 0%, #dc2626 100%);
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(239,68,68,.35);
+    }
+    .btn-danger:hover { transform: translateY(-2px); }
+    .btn-outline {
+      background: transparent;
+      color: var(--primary);
+      border: 2px solid var(--primary);
+    }
+    .btn-outline:hover { background: var(--primary-l); }
+    .btn-lg { padding: 15px 36px; font-size: 1.05rem; }
+    .btn-sm { padding: 8px 18px; font-size: .85rem; }
+
+    /* ======================================================
+       QUIZ SCREEN
+    ====================================================== */
+    /* Progress section */
+    #progress-section {
+      background: var(--card);
+      border-radius: var(--r);
+      padding: 18px 22px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      transition: all var(--transition);
+    }
+    .progress-meta {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 12px; flex-wrap: wrap; gap: 8px;
+    }
+    .progress-meta .q-count {
+      font-size: .9rem; font-weight: 700; color: var(--text2);
+    }
+    .progress-meta .q-count span { color: var(--primary); font-size: 1.1rem; }
+    .progress-meta .topic-tag {
+      background: var(--primary-l); color: var(--primary);
+      border-radius: 50px; padding: 3px 12px;
+      font-size: .78rem; font-weight: 700;
+    }
+    .progress-bar-track {
+      height: 10px; background: var(--bg2);
+      border-radius: 99px; overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), #8b5cf6);
+      border-radius: 99px;
+      transition: width .5s cubic-bezier(.4,0,.2,1);
+    }
+
+    /* Question Card */
+    #question-card {
+      background: var(--card);
+      border-radius: var(--r);
+      padding: 28px 28px 24px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      margin-bottom: 16px;
+      min-height: 240px;
+      transition: all var(--transition);
+      animation: slideIn .35s ease both;
+    }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(24px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    .question-type-label {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--accent-l); color: #b45309;
+      border-radius: 50px; padding: 4px 12px;
+      font-size: .78rem; font-weight: 800; letter-spacing: .05em; text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+    [data-theme="dark"] .question-type-label { color: var(--accent); }
+    #question-text {
+      font-size: 1.1rem; font-weight: 600; line-height: 1.6;
+      color: var(--text); margin-bottom: 22px;
+    }
+
+    /* MCQ Options */
+    .options-list { display: grid; gap: 10px; }
+    .option-btn {
+      display: flex; align-items: center; gap: 12px;
+      padding: 13px 16px;
+      background: var(--card2); border: 2px solid var(--border);
+      border-radius: var(--r-sm); text-align: left;
+      font-size: .95rem; font-weight: 600; color: var(--text);
+      cursor: pointer; width: 100%;
+      transition: all .2s;
+    }
+    .option-btn:hover { border-color: var(--primary); background: var(--primary-l); color: var(--primary); }
+    .option-btn.selected { border-color: var(--primary); background: var(--primary-l); color: var(--primary); }
+    .option-btn.correct  { border-color: var(--success); background: var(--success-l); color: var(--success); }
+    .option-btn.wrong    { border-color: var(--danger);  background: var(--danger-l);  color: var(--danger);  }
+    .option-letter {
+      display: flex; align-items: center; justify-content: center;
+      width: 30px; height: 30px; border-radius: 50%;
+      background: var(--border); font-size: .8rem; font-weight: 800;
+      flex-shrink: 0; transition: all .2s;
+    }
+    .option-btn.selected .option-letter { background: var(--primary); color: #fff; }
+    .option-btn.correct  .option-letter { background: var(--success); color: #fff; }
+    .option-btn.wrong    .option-letter { background: var(--danger);  color: #fff; }
+
+    /* True/False */
+    .tf-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .tf-btn {
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+      padding: 20px 12px;
+      background: var(--card2); border: 2px solid var(--border);
+      border-radius: var(--r); cursor: pointer;
+      font-size: 1rem; font-weight: 800; color: var(--text);
+      transition: all .2s;
+    }
+    .tf-btn .tf-icon { font-size: 2rem; }
+    .tf-btn:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+    .tf-btn[data-val="true"]:hover  { border-color: var(--success); background: var(--success-l); color: var(--success); }
+    .tf-btn[data-val="false"]:hover { border-color: var(--danger);  background: var(--danger-l);  color: var(--danger); }
+    .tf-btn.selected[data-val="true"]  { border-color: var(--success); background: var(--success-l); color: var(--success); }
+    .tf-btn.selected[data-val="false"] { border-color: var(--danger);  background: var(--danger-l);  color: var(--danger); }
+    .tf-btn.correct  { border-color: var(--success); background: var(--success-l); color: var(--success); animation: bounce .4s; }
+    .tf-btn.wrong    { border-color: var(--danger);  background: var(--danger-l);  color: var(--danger); animation: shake .4s; }
+
+    /* Fill in blank */
+    .fillblank-wrap { position: relative; margin-top: 4px; }
+    .fillblank-input {
+      width: 100%; padding: 14px 50px 14px 16px;
+      border: 2px solid var(--border);
+      border-radius: var(--r-sm);
+      background: var(--card2); color: var(--text);
+      font-size: 1rem; font-weight: 600;
+      transition: all .2s;
+    }
+    .fillblank-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-l); background: var(--card); }
+    .fillblank-input.correct { border-color: var(--success); background: var(--success-l); color: var(--success); }
+    .fillblank-input.wrong   { border-color: var(--danger);  background: var(--danger-l);  color: var(--danger); animation: shake .4s; }
+    .check-icon { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); font-size: 1.3rem; }
+
+    /* Type Answer */
+    .typeanswer-area {
+      width: 100%;
+      min-height: 90px; padding: 14px 16px;
+      border: 2px solid var(--border);
+      border-radius: var(--r-sm);
+      background: var(--card2); color: var(--text);
+      font-size: .95rem; font-weight: 500; resize: vertical;
+      transition: all .2s;
+    }
+    .typeanswer-area:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-l); background: var(--card); }
+    .typeanswer-area.correct { border-color: var(--success); background: var(--success-l); }
+    .typeanswer-area.wrong   { border-color: var(--danger);  background: var(--danger-l);  }
+    .hint-text { font-size: .82rem; color: var(--text3); margin-top: 6px; font-style: italic; }
+
+    /* Drag and Drop */
+    .dragdrop-container { user-select: none; }
+    .number-display {
+      font-family: 'Baloo 2', cursive;
+      font-size: 2.5rem; font-weight: 800; color: var(--primary);
+      text-align: center; letter-spacing: 8px;
+      background: var(--primary-l); border-radius: var(--r-sm);
+      padding: 14px 20px; margin-bottom: 20px;
+    }
+    .drag-columns {
+      display: grid; gap: 16px;
+    }
+    .drag-targets {
+      display: grid; gap: 8px;
+    }
+    .drag-target-row {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 14px;
+      background: var(--card2); border: 2px dashed var(--border);
+      border-radius: var(--r-sm);
+      transition: all .2s;
+    }
+    .drag-target-row.hover-active { border-color: var(--primary); background: var(--primary-l); }
+    .drag-target-row.filled  { border-style: solid; border-color: var(--primary); }
+    .drag-target-row.correct { border-color: var(--success); background: var(--success-l); }
+    .drag-target-row.wrong   { border-color: var(--danger);  background: var(--danger-l);  }
+    .target-digit {
+      font-family: 'Baloo 2', cursive;
+      font-size: 1.5rem; font-weight: 800; color: var(--primary);
+      min-width: 36px; text-align: center;
+    }
+    .target-place {
+      font-size: .85rem; font-weight: 700; color: var(--text2);
+      min-width: 130px;
+    }
+    .target-drop-zone {
+      flex: 1; min-height: 36px; border-radius: var(--r-sm);
+      border: 2px dashed var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: .85rem; color: var(--text3); font-weight: 600;
+      padding: 4px 8px; cursor: pointer;
+      transition: all .2s;
+    }
+    .target-drop-zone.has-chip { border-style: solid; border-color: var(--primary); background: var(--primary-l); }
+    .target-drop-zone:hover { border-color: var(--primary); background: var(--primary-l); }
+
+    .drag-labels { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+    .drag-chip {
+      padding: 8px 16px; border-radius: 50px;
+      background: var(--secondary-l); color: var(--secondary);
+      border: 2px solid var(--secondary);
+      font-size: .87rem; font-weight: 700;
+      cursor: grab; transition: all .2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .drag-chip:hover, .drag-chip.selected { background: var(--secondary); color: #fff; transform: scale(1.06); box-shadow: 0 4px 12px rgba(249,115,22,.35); }
+    .drag-chip.used { opacity: .35; pointer-events: none; }
+    .drag-chip.dragging { opacity: .5; cursor: grabbing; }
+
+    /* Feedback box */
+    .feedback-box {
+      margin-top: 16px; padding: 14px 18px;
+      border-radius: var(--r-sm); display: flex; gap: 12px; align-items: flex-start;
+      animation: fadeIn .3s ease;
+    }
+    .feedback-box.correct-fb { background: var(--success-l); border-left: 4px solid var(--success); }
+    .feedback-box.wrong-fb   { background: var(--danger-l);  border-left: 4px solid var(--danger); }
+    .feedback-box .fb-icon { font-size: 1.4rem; flex-shrink: 0; }
+    .feedback-box .fb-text { font-size: .9rem; font-weight: 600; color: var(--text); }
+    .feedback-box .fb-text .fb-title { font-weight: 800; font-size: .95rem; display: block; margin-bottom: 3px; }
+    .feedback-box.correct-fb .fb-text .fb-title { color: var(--success); }
+    .feedback-box.wrong-fb   .fb-text .fb-title { color: var(--danger); }
+
+    /* Navigation buttons */
+    #nav-buttons {
+      display: flex; gap: 10px; flex-wrap: wrap;
+      margin-top: 6px;
+    }
+    #nav-buttons .btn { flex: 1; min-width: 130px; }
+
+    /* Question dot nav */
+    #dot-nav {
+      display: flex; flex-wrap: wrap; gap: 6px;
+      justify-content: center; margin-top: 18px;
+    }
+    .dot-btn {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--card2); border: 2px solid var(--border);
+      font-size: .8rem; font-weight: 700; color: var(--text3);
+      cursor: pointer; transition: all .2s;
+    }
+    .dot-btn:hover { border-color: var(--primary); color: var(--primary); }
+    .dot-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .dot-btn.answered { background: var(--success-l); color: var(--success); border-color: var(--success); }
+    .dot-btn.active.answered { background: var(--success); color: #fff; }
+
+    /* ======================================================
+       RESULTS SCREEN
+    ====================================================== */
+    .results-hero {
+      text-align: center; padding: 32px 20px 24px;
+      background: var(--card);
+      border-radius: var(--r-lg);
+      margin-bottom: 20px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+    }
+    .score-ring {
+      width: 140px; height: 140px;
+      border-radius: 50%;
+      background: conic-gradient(var(--primary) 0deg, var(--bg2) 0deg);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 16px;
+      position: relative;
+    }
+    .score-ring-inner {
+      width: 110px; height: 110px;
+      border-radius: 50%; background: var(--card);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+    }
+    .score-big { font-family: 'Baloo 2', cursive; font-size: 2rem; font-weight: 800; color: var(--primary); line-height: 1; }
+    .score-label { font-size: .75rem; font-weight: 700; color: var(--text3); }
+    .results-hero h2 { font-size: 1.6rem; margin-bottom: 6px; }
+    .results-hero .encouragement { font-size: 1rem; color: var(--text2); max-width: 400px; margin: 0 auto; }
+    .stats-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px; margin-bottom: 20px;
+    }
+    .stat-card {
+      background: var(--card); border-radius: var(--r);
+      padding: 18px 16px; text-align: center;
+      box-shadow: var(--shadow); border: 1px solid var(--border);
+    }
+    .stat-card .stat-val { font-family: 'Baloo 2', cursive; font-size: 1.8rem; font-weight: 800; color: var(--primary); }
+    .stat-card .stat-name { font-size: .82rem; font-weight: 700; color: var(--text3); margin-top: 2px; }
+
+    .answers-review { margin-bottom: 20px; }
+    .answers-review h3 { font-size: 1.2rem; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+    .review-item {
+      background: var(--card); border-radius: var(--r-sm);
+      padding: 14px 16px; margin-bottom: 10px;
+      border-left: 4px solid var(--border);
+      box-shadow: 0 2px 8px rgba(0,0,0,.06);
+      transition: all var(--transition);
+    }
+    .review-item.correct-item { border-left-color: var(--success); }
+    .review-item.wrong-item   { border-left-color: var(--danger);  }
+    .review-item .ri-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 6px; }
+    .review-item .ri-q { font-size: .9rem; font-weight: 600; color: var(--text); flex: 1; }
+    .review-item .ri-badge {
+      font-size: .75rem; font-weight: 800; padding: 2px 10px;
+      border-radius: 50px; flex-shrink: 0;
+    }
+    .correct-item .ri-badge { background: var(--success-l); color: var(--success); }
+    .wrong-item   .ri-badge { background: var(--danger-l);  color: var(--danger);  }
+    .review-item .ri-answers { font-size: .85rem; color: var(--text2); }
+    .review-item .ri-answers span { font-weight: 700; }
+
+    .results-actions {
+      display: flex; flex-wrap: wrap; gap: 10px;
+      justify-content: center;
+    }
+
+    /* ======================================================
+       THANK YOU SCREEN
+    ====================================================== */
+    .thankyou-card {
+      text-align: center; padding: 50px 28px;
+      background: var(--card);
+      border-radius: var(--r-lg);
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--border);
+    }
+    .thankyou-card .ty-icon { font-size: 4rem; display: block; margin-bottom: 16px; animation: bounce 1s ease 3; }
+    .thankyou-card h2 { font-size: 2rem; margin-bottom: 10px; color: var(--primary); }
+    .thankyou-card p { font-size: 1rem; color: var(--text2); max-width: 400px; margin: 0 auto 24px; }
+    .ty-details {
+      display: inline-block; background: var(--bg2);
+      border-radius: var(--r); padding: 16px 28px;
+      margin-bottom: 28px; text-align: left;
+    }
+    .ty-details div { font-size: .9rem; margin-bottom: 5px; color: var(--text2); }
+    .ty-details div span { font-weight: 700; color: var(--text); }
+    .confetti-container {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      pointer-events: none; z-index: 999; overflow: hidden;
+    }
+    .confetti-piece {
+      position: absolute;
+      width: 10px; height: 10px;
+      animation: confetti-fall linear forwards;
+    }
+    @keyframes confetti-fall {
+      0%   { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+    }
+
+    /* ======================================================
+       TOAST NOTIFICATION
+    ====================================================== */
+    #toast {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px);
+      background: var(--text); color: #fff;
+      padding: 12px 24px; border-radius: 50px;
+      font-size: .9rem; font-weight: 700;
+      box-shadow: 0 8px 24px rgba(0,0,0,.25);
+      opacity: 0; transition: all .3s; z-index: 9999;
+      white-space: nowrap;
+    }
+    #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* ======================================================
+       ANIMATIONS
+    ====================================================== */
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
+    @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+    @keyframes shake  { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+
+    /* ======================================================
+       LOADING SPINNER
+    ====================================================== */
+    .spinner {
+      width: 22px; height: 22px;
+      border: 3px solid rgba(255,255,255,.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      display: inline-block;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ======================================================
+       SETUP INSTRUCTIONS CARD
+    ====================================================== */
+    .setup-card {
+      background: var(--info-l);
+      border: 1.5px solid var(--info);
+      border-radius: var(--r);
+      padding: 16px 20px;
+      margin-bottom: 16px;
+      font-size: .87rem; color: var(--text);
+    }
+    .setup-card h4 { color: var(--info); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; font-size: .95rem; }
+    .setup-card ol { padding-left: 18px; }
+    .setup-card li { margin-bottom: 4px; line-height: 1.5; }
+    .setup-card code {
+      background: var(--card); padding: 2px 6px;
+      border-radius: 4px; font-size: .85rem;
+      color: var(--primary); font-family: monospace;
+    }
+
+    /* ======================================================
+       RESPONSIVE
+    ====================================================== */
+    @media (max-width: 600px) {
+      #main { padding: 20px 14px 50px; }
+      .hero-card { padding: 26px 18px; }
+      .hero-card h1 { font-size: 1.5rem; }
+      .hero-card .trophy { font-size: 2.8rem; }
+      .form-card, #question-card, .form-grid { padding: 20px 16px; }
+      .form-grid { grid-template-columns: 1fr; }
+      #question-text { font-size: 1rem; }
+      .number-display { font-size: 1.8rem; letter-spacing: 4px; }
+      .tf-row { grid-template-columns: 1fr 1fr; }
+      #top-bar .logo span { font-size: 1.3rem; }
+      #quiz-header-info { gap: 8px; }
+      #quiz-header-info .stat-badge { padding: 4px 10px; font-size: .78rem; }
+      .results-actions { flex-direction: column; }
+      .results-actions .btn { width: 100%; }
+      #nav-buttons .btn { font-size: .87rem; padding: 11px 16px; }
+    }
+    @media (max-width: 380px) {
+      .tf-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ========== TOP BAR ========== -->
+  <header id="top-bar">
+    <div class="logo"><span>📐</span> PlaceValue Quiz</div>
+    <div id="quiz-header-info" class="hidden">
+      <div class="stat-badge"><span class="icon">👤</span><span id="hdr-name">—</span></div>
+      <div class="stat-badge" id="timer-badge"><span class="icon">⏱️</span><span id="hdr-timer">30:00</span></div>
+      <div class="stat-badge"><span class="icon">💯</span><span id="hdr-score">0/0</span></div>
+    </div>
+    <button id="theme-toggle" onclick="toggleTheme()" title="Toggle Day/Night">
+      <span class="toggle-icon">🌤️</span>
+      <span id="theme-label">Day Mode</span>
+    </button>
+  </header>
+
+  <!-- ========== MAIN AREA ========== -->
+  <main id="main">
+
+    <!-- ===== SCREEN 1: STUDENT FORM ===== -->
+    <section id="screen-intro" class="screen">
+      <div class="hero-card">
+        <span class="trophy">🏆</span>
+        <h1>Place Value &amp; Face Value Quiz</h1>
+        <p>Test your understanding of place values, face values, and the Indian &amp; International number systems!</p>
+      </div>
+
+      <div class="form-card">
+        <h2>📋 Student Information</h2>
+        <p style="font-size:.9rem;color:var(--text2);margin-bottom:20px;">Please fill in all your details before starting the quiz.</p>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Full Name <span class="req">*</span></label>
+            <input id="f-name" class="form-control" type="text" placeholder="e.g. Aarav Sharma" oninput="checkFormValid()" maxlength="60" />
+          </div>
+          <div class="form-group">
+            <label>School Name <span class="req">*</span></label>
+            <input id="f-school" class="form-control" type="text" placeholder="e.g. Delhi Public School" oninput="checkFormValid()" maxlength="80" />
+          </div>
+          <div class="form-group">
+            <label>Class / Grade <span class="req">*</span></label>
+            <select id="f-class" class="form-control" onchange="checkFormValid()">
+              <option value="">— Select Class —</option>
+              <option>Class 4</option><option>Class 5</option><option>Class 6</option>
+              <option>Class 7</option><option>Class 8</option><option>Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Roll Number <span class="req">*</span></label>
+            <input id="f-roll" class="form-control" type="text" placeholder="e.g. 12" oninput="checkFormValid()" maxlength="10" />
+          </div>
+        </div>
+
+        <div style="text-align:center;margin-top:8px;">
+          <button id="start-btn" class="btn btn-primary btn-lg" onclick="startQuiz()" disabled>
+            🚀 Start Test
+          </button>
+        </div>
+
+        <!-- Info panel -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-top:24px;">
+          <div style="background:var(--accent-l);border-radius:var(--r-sm);padding:14px;text-align:center;">
+            <div style="font-size:1.6rem;">📝</div>
+            <div style="font-size:.85rem;font-weight:700;color:var(--text2);margin-top:4px;">20 Questions</div>
+          </div>
+          <div style="background:var(--primary-l);border-radius:var(--r-sm);padding:14px;text-align:center;">
+            <div style="font-size:1.6rem;">⏱️</div>
+            <div style="font-size:.85rem;font-weight:700;color:var(--text2);margin-top:4px;">30 Minutes</div>
+          </div>
+          <div style="background:var(--success-l);border-radius:var(--r-sm);padding:14px;text-align:center;">
+            <div style="font-size:1.6rem;">🎯</div>
+            <div style="font-size:.85rem;font-weight:700;color:var(--text2);margin-top:4px;">5 Types</div>
+          </div>
+          <div style="background:var(--danger-l);border-radius:var(--r-sm);padding:14px;text-align:center;">
+            <div style="font-size:1.6rem;">📊</div>
+            <div style="font-size:.85rem;font-weight:700;color:var(--text2);margin-top:4px;">Auto Graded</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SCREEN 2: QUIZ ===== -->
+    <section id="screen-quiz" class="screen hidden">
+      <!-- Progress Bar -->
+      <div id="progress-section">
+        <div class="progress-meta">
+          <div class="q-count">Question <span id="q-current">1</span> of <span id="q-total">20</span></div>
+          <div class="topic-tag" id="q-topic">Place Value</div>
+        </div>
+        <div class="progress-bar-track">
+          <div class="progress-bar-fill" id="progress-fill" style="width:5%"></div>
+        </div>
+      </div>
+
+      <!-- Question Card -->
+      <div id="question-card">
+        <div class="question-type-label" id="q-type-label">📝 MCQ</div>
+        <div id="question-text"></div>
+        <div id="question-input-area"></div>
+        <div id="feedback-area"></div>
+      </div>
+
+      <!-- Navigation -->
+      <div id="nav-buttons">
+        <button class="btn btn-secondary" onclick="prevQuestion()" id="btn-prev">← Previous</button>
+        <button class="btn btn-primary"   onclick="submitAnswer()" id="btn-check">✔ Check Answer</button>
+        <button class="btn btn-secondary" onclick="nextQuestion()" id="btn-next">Next →</button>
+      </div>
+
+      <!-- Dot Navigation -->
+      <div id="dot-nav"></div>
+    </section>
+
+    <!-- ===== SCREEN 3: RESULTS ===== -->
+    <section id="screen-results" class="screen hidden">
+      <div class="results-hero">
+        <div class="score-ring" id="score-ring">
+          <div class="score-ring-inner">
+            <div class="score-big" id="score-pct">0%</div>
+            <div class="score-label">Score</div>
+          </div>
+        </div>
+        <h2 id="result-title">🎉 Well Done!</h2>
+        <p class="encouragement" id="result-msg"></p>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-val" id="res-correct">0</div><div class="stat-name">✅ Correct</div></div>
+        <div class="stat-card"><div class="stat-val" id="res-wrong">0</div><div class="stat-name">❌ Wrong</div></div>
+        <div class="stat-card"><div class="stat-val" id="res-skipped">0</div><div class="stat-name">⏭ Skipped</div></div>
+        <div class="stat-card"><div class="stat-val" id="res-time">—</div><div class="stat-name">⏱ Time Taken</div></div>
+      </div>
+
+      <!-- Google Sheets Config notice (shown only if URL not set) -->
+      <div id="setup-instructions" class="setup-card">
+        <h4>🔧 Google Sheets Setup Required</h4>
+        <p style="margin-bottom:8px;">To enable automatic submission to Google Sheets, a teacher/admin must complete this one-time setup:</p>
+        <ol>
+          <li>Open <strong>Google Sheets</strong> and create a new spreadsheet.</li>
+          <li>Go to <strong>Extensions → Apps Script</strong> and paste the Apps Script code (provided in the HTML comments at the bottom of this file).</li>
+          <li>Click <strong>Deploy → New Deployment → Web App</strong>.</li>
+          <li>Set <em>Execute as: Me</em> and <em>Who has access: Anyone</em>. Copy the <strong>Web App URL</strong>.</li>
+          <li>Open this HTML file in a text editor, find <code>APPS_SCRIPT_URL</code> near the top of the &lt;script&gt; block, and paste the URL.</li>
+        </ol>
+      </div>
+
+      <!-- Answer Review -->
+      <div class="answers-review">
+        <h3>📖 Answer Review</h3>
+        <div id="review-list"></div>
+      </div>
+
+      <div class="results-actions">
+        <button class="btn btn-success btn-lg" onclick="submitToSheets()" id="btn-submit">
+          📤 Submit to Google Sheets
+        </button>
+        <button class="btn btn-outline" onclick="downloadCSV()">⬇️ Download Excel/CSV</button>
+        <button class="btn btn-secondary" onclick="restartQuiz()">🔄 Restart Test</button>
+      </div>
+    </section>
+
+    <!-- ===== SCREEN 4: THANK YOU ===== -->
+    <section id="screen-thankyou" class="screen hidden">
+      <div class="thankyou-card">
+        <span class="ty-icon">🎊</span>
+        <h2>Thank You!</h2>
+        <p>Your responses have been successfully submitted. Great job completing the quiz!</p>
+        <div class="ty-details" id="ty-details"></div>
+        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+          <button class="btn btn-primary" onclick="downloadCSV()">⬇️ Download My Report</button>
+          <button class="btn btn-secondary" onclick="restartQuiz()">🔄 Take Quiz Again</button>
+        </div>
+      </div>
+    </section>
+
+  </main><!-- /main -->
+</div><!-- /app -->
+
+<!-- Toast -->
+<div id="toast"></div>
+<!-- Confetti -->
+<div class="confetti-container" id="confetti-container"></div>
+
+<!-- ============================================================
+     JAVASCRIPT
+============================================================ -->
+<script>
+/* ============================================================
+   ██████╗ ██████╗ ███╗   ██╗███████╗██╗ ██████╗
+  ██╔════╝██╔═══██╗████╗  ██║██╔════╝██║██╔════╝
+  ██║     ██║   ██║██╔██╗ ██║█████╗  ██║██║  ███╗
+  ██║     ██║   ██║██║╚██╗██║██╔══╝  ██║██║   ██║
+  ╚██████╗╚██████╔╝██║ ╚████║██║     ██║╚██████╔╝
+   ╚═════╝ ╚═════╝ ╚═╝  ╚═══╝╚═╝     ╚═╝ ╚═════╝
+============================================================ */
+
+/* ============================================================
+   ① CONFIGURATION  — Edit these values to customise the quiz
+============================================================ */
+const CONFIG = {
+  /* -----------------------------------------------------------
+   * Google Apps Script Web App URL
+   * Steps to get this URL:
+   *  1. Open your Google Sheet
+   *  2. Extensions → Apps Script
+   *  3. Paste the Apps Script code (see bottom of file for code)
+   *  4. Deploy → New Deployment → Web App
+   *     Execute as: Me | Who has access: Anyone
+   *  5. Copy the URL and paste it below
+   * ----------------------------------------------------------- */
+  APPS_SCRIPT_URL: '',           // ← PASTE YOUR URL HERE
+
+  QUIZ_TITLE:      'Place Value & Face Value Quiz',
+  TOTAL_SECONDS:   30 * 60,      // 30 minutes
+  SHOW_TIMER:      true,
+  AUTO_SAVE:       true,         // Save progress to localStorage
+  INSTANT_FEEDBACK: true,        // Show correct/wrong after each question
+  LOCAL_STORAGE_KEY: 'pvfvQuizState',
+};
+
+/* ============================================================
+   ② QUESTION BANK  (20 Questions)
+============================================================ */
+const QUESTIONS = [
+  /* ── 1 ── MCQ ── Face Value ─────────────────────────── */
+  {
+    id:1, type:'mcq', topic:'Face Value',
+    question:'What is the <strong>face value</strong> of <strong>7</strong> in the number 27,456?',
+    options:['7','70','700','7,000'],
+    correct:0,
+    explanation:'The face value of a digit is always the digit itself, regardless of its position. So the face value of 7 in 27,456 is simply <strong>7</strong>.'
+  },
+  /* ── 2 ── MCQ ── Place Value ─────────────────────────── */
+  {
+    id:2, type:'mcq', topic:'Place Value',
+    question:'What is the <strong>place value</strong> of <strong>5</strong> in the number 3,567?',
+    options:['5','50','500','5,000'],
+    correct:2,
+    explanation:'5 is in the <strong>hundreds place</strong> in 3,567. Its place value = 5 × 100 = <strong>500</strong>.'
+  },
+  /* ── 3 ── Fill Blank ── Place Value ──────────────────── */
+  {
+    id:3, type:'fillblank', topic:'Place Value',
+    question:'The <strong>place value</strong> of <strong>4</strong> in 94,321 is ________.',
+    displayAnswer:'4,000',
+    acceptedAnswers:['4000','4,000'],
+    explanation:'4 is in the <strong>thousands place</strong>. Place value = 4 × 1,000 = <strong>4,000</strong>.'
+  },
+  /* ── 4 ── True/False ─────────────────────────────────── */
+  {
+    id:4, type:'truefalse', topic:'Face Value',
+    question:'The <strong>face value</strong> of a digit is always the same, regardless of its position in a number.',
+    correct:true,
+    explanation:'<strong>TRUE!</strong> Face value is simply the digit itself. The face value of 6 is always 6 — whether it appears in 6, 60, 600, or 6,00,000.'
+  },
+  /* ── 5 ── MCQ ── Indian System ───────────────────────── */
+  {
+    id:5, type:'mcq', topic:'Indian Number System',
+    question:'In the Indian number system, which place does <strong>3</strong> occupy in 5,38,219?',
+    options:['Hundreds','Thousands','Ten Thousands','Lakhs'],
+    correct:2,
+    explanation:'In 5,38,219 — reading right to left: 9→Ones, 1→Tens, 2→Hundreds, 8→Thousands, <strong>3→Ten Thousands</strong>, 5→Lakhs.'
+  },
+  /* ── 6 ── Fill Blank ── Zero ─────────────────────────── */
+  {
+    id:6, type:'fillblank', topic:'Face Value',
+    question:'The <strong>face value</strong> of <strong>0</strong> in any number is always ________.',
+    displayAnswer:'0',
+    acceptedAnswers:['0','zero'],
+    explanation:'The face value of 0 is always <strong>0</strong>, no matter where it appears in a number.'
+  },
+  /* ── 7 ── MCQ ── Expanded Form ───────────────────────── */
+  {
+    id:7, type:'mcq', topic:'Expanded Form',
+    question:'What is the <strong>expanded form</strong> of 4,325?',
+    options:['4,000 + 300 + 25','4,000 + 300 + 20 + 5','4,300 + 25','400 + 300 + 20 + 5'],
+    correct:1,
+    explanation:'4,325 = <strong>4,000 + 300 + 20 + 5</strong>. Each digit is multiplied by its place value to get the expanded form.'
+  },
+  /* ── 8 ── True/False ─────────────────────────────────── */
+  {
+    id:8, type:'truefalse', topic:'Place Value',
+    question:'The <strong>place value</strong> of <strong>1</strong> in 1,00,000 is 1,00,000.',
+    correct:true,
+    explanation:'<strong>TRUE!</strong> 1 is in the lakhs place in 1,00,000. Place value = 1 × 1,00,000 = <strong>1,00,000</strong>.'
+  },
+  /* ── 9 ── MCQ ── Difference ──────────────────────────── */
+  {
+    id:9, type:'mcq', topic:'Difference (PV − FV)',
+    question:'What is the <strong>difference</strong> between the place value and face value of <strong>6</strong> in 46,839?',
+    options:['6','594','5,994','6,000'],
+    correct:2,
+    explanation:'Place value of 6 (thousands place) = 6,000. Face value = 6. Difference = 6,000 − 6 = <strong>5,994</strong>.'
+  },
+  /* ── 10 ── Drag & Drop ───────────────────────────────── */
+  {
+    id:10, type:'dragdrop', topic:'Place Value Chart',
+    question:'Tap a label below, then tap the correct slot to match each digit of <strong>5,432</strong> to its place value!',
+    number:'5,432',
+    rows:[
+      {digit:'5', place:'Thousands'},
+      {digit:'4', place:'Hundreds'},
+      {digit:'3', place:'Tens'},
+      {digit:'2', place:'Ones'},
+    ],
+    labels:['Thousands','Hundreds','Tens','Ones'],
+    explanation:'In 5,432: <strong>5 → Thousands</strong>, <strong>4 → Hundreds</strong>, <strong>3 → Tens</strong>, <strong>2 → Ones</strong>.'
+  },
+  /* ── 11 ── Fill Blank ── Zero PV ─────────────────────── */
+  {
+    id:11, type:'fillblank', topic:'Place Value – Zero',
+    question:'In 8,04,291, the <strong>place value</strong> of <strong>0</strong> is ________.',
+    displayAnswer:'0',
+    acceptedAnswers:['0','zero'],
+    explanation:'The place value of 0 is <strong>always 0</strong>, regardless of its position (0 × any place value = 0).'
+  },
+  /* ── 12 ── MCQ ── International System ──────────────── */
+  {
+    id:12, type:'mcq', topic:'International Number System',
+    question:'In the International number system, the digit <strong>4</strong> in 4,567,890 is in which place?',
+    options:['Hundred Thousands','Ten Millions','Millions','Billions'],
+    correct:2,
+    explanation:'4,567,890 — reading right to left: Ones, Tens, Hundreds, Thousands, Ten Thousands, Hundred Thousands, <strong>Millions</strong>. So 4 is in the Millions place.'
+  },
+  /* ── 13 ── True/False ────────────────────────────────── */
+  {
+    id:13, type:'truefalse', topic:'Face Value',
+    question:'In the number 50,000, the <strong>face value</strong> of 5 is 50,000.',
+    correct:false,
+    explanation:`<strong>FALSE!</strong> 50,000 is the <em>place value</em> of 5 (it's in the ten-thousands place). The face value of 5 is always just <strong>5</strong>.`
+  },
+  /* ── 14 ── Type Answer ───────────────────────────────── */
+  {
+    id:14, type:'typeanswer', topic:'Expanded Form',
+    question:'Write the <strong>expanded form</strong> of 3,04,519.',
+    hint:'Hint: Use + between parts, e.g., 3,00,000 + 4,000 + 500 + 10 + 9',
+    displayAnswer:'3,00,000 + 4,000 + 500 + 10 + 9',
+    acceptedAnswers:['3,00,000+4,000+500+10+9','300000+4000+500+10+9',
+                     '3,00,000 + 4,000 + 500 + 10 + 9','300000 + 4000 + 500 + 10 + 9'],
+    explanation:'3,04,519 = <strong>3,00,000 + 4,000 + 500 + 10 + 9</strong>. (Note: the hundreds digit is 0, so it is not included.)'
+  },
+  /* ── 15 ── MCQ ── Same PV & FV ───────────────────────── */
+  {
+    id:15, type:'mcq', topic:'Face Value = Place Value',
+    question:'In the number 5,678, which digit has the <strong>same</strong> face value and place value?',
+    options:['5','6','7','8'],
+    correct:3,
+    explanation:'8 is in the ones place. Place value = 8 × 1 = 8. Face value = 8. They are <strong>equal</strong>! (Any digit in the ones place has PV = FV.)'
+  },
+  /* ── 16 ── Fill Blank ── Lakhs ───────────────────────── */
+  {
+    id:16, type:'fillblank', topic:'Place Value – Lakhs',
+    question:'The <strong>place value</strong> of <strong>9</strong> in 9,27,345 is ________.',
+    displayAnswer:'9,00,000',
+    acceptedAnswers:['9,00,000','900000','9 lakh','9,00,000'],
+    explanation:'9 is in the <strong>lakhs place</strong>. Place value = 9 × 1,00,000 = <strong>9,00,000</strong>.'
+  },
+  /* ── 17 ── MCQ ── Counting Places ───────────────────── */
+  {
+    id:17, type:'mcq', topic:'Indian Number System',
+    question:'How many <strong>place values</strong> are there in the Indian number system up to and including <strong>Crores</strong>?',
+    options:['6','7','8','9'],
+    correct:2,
+    explanation:'The 8 places are: <strong>Ones, Tens, Hundreds, Thousands, Ten Thousands, Lakhs, Ten Lakhs, Crores</strong>.'
+  },
+  /* ── 18 ── True/False ─────────────────────────────── */
+  {
+    id:18, type:'truefalse', topic:'Place Value – Zero',
+    question:'The place value of every digit <strong>0</strong> in any number is always 0.',
+    correct:true,
+    explanation:'<strong>TRUE!</strong> Zero multiplied by any place value always gives 0. So the place value of 0 is always 0.'
+  },
+  /* ── 19 ── MCQ ── Sum of Place Values ────────────── */
+  {
+    id:19, type:'mcq', topic:'Place Value',
+    question:'In 72,384, what is the <strong>sum of place values</strong> of the digits <strong>7</strong> and <strong>3</strong>?',
+    options:['7,030','70,300','73,000','703'],
+    correct:1,
+    explanation:'Place value of 7 (ten-thousands) = 70,000. Place value of 3 (hundreds) = 300. Sum = 70,000 + 300 = <strong>70,300</strong>.'
+  },
+  /* ── 20 ── Drag & Drop ── 5-digit Indian ─────────── */
+  {
+    id:20, type:'dragdrop', topic:'Indian Place Value Chart',
+    question:'Tap a label, then tap a slot to match each digit of <strong>63,541</strong> to its place value (Indian system)!',
+    number:'63,541',
+    rows:[
+      {digit:'6', place:'Ten Thousands'},
+      {digit:'3', place:'Thousands'},
+      {digit:'5', place:'Hundreds'},
+      {digit:'4', place:'Tens'},
+      {digit:'1', place:'Ones'},
+    ],
+    labels:['Ten Thousands','Thousands','Hundreds','Tens','Ones'],
+    explanation:'In 63,541: <strong>6→Ten Thousands</strong>, <strong>3→Thousands</strong>, <strong>5→Hundreds</strong>, <strong>4→Tens</strong>, <strong>1→Ones</strong>.'
+  },
+];
+
+/* ============================================================
+   ③ APP STATE
+============================================================ */
+let student = {};          // Filled from the form
+let answers  = {};         // { questionId: { value, correct } }
+let currentQ = 0;          // 0-based index into QUESTIONS
+let timerInterval = null;
+let secondsElapsed = 0;
+let quizStarted = false;
+let ddSelected = null;      // drag-drop: currently selected label text
+
+/* ============================================================
+   ④ THEME TOGGLE
+============================================================ */
+function toggleTheme() {
+  const html  = document.documentElement;
+  const isDark = html.getAttribute('data-theme') === 'dark';
+  html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  document.querySelector('#theme-toggle .toggle-icon').textContent = isDark ? '🌤️' : '🌙';
+  document.getElementById('theme-label').textContent = isDark ? 'Day Mode' : 'Night Mode';
+}
+
+/* ============================================================
+   ⑤ FORM VALIDATION
+============================================================ */
+function checkFormValid() {
+  const ok = v('f-name').trim() && v('f-school').trim() && v('f-class') && v('f-roll').trim();
+  document.getElementById('start-btn').disabled = !ok;
+}
+
+/* ============================================================
+   ⑥ START QUIZ
+============================================================ */
+function startQuiz() {
+  student = {
+    name:   v('f-name').trim(),
+    school: v('f-school').trim(),
+    cls:    v('f-class'),
+    roll:   v('f-roll').trim(),
+  };
+
+  /* Try to restore saved progress */
+  let restored = false;
+  if (CONFIG.AUTO_SAVE) {
+    const saved = localStorage.getItem(CONFIG.LOCAL_STORAGE_KEY);
+    if (saved) {
+      try {
+        const s = JSON.parse(saved);
+        if (s.student.name === student.name && s.student.roll === student.roll) {
+          answers       = s.answers || {};
+          currentQ      = s.currentQ || 0;
+          secondsElapsed= s.secondsElapsed || 0;
+          restored = true;
+          showToast('✅ Progress restored from last session!');
+        }
+      } catch(e) { /* ignore */ }
+    }
+  }
+  if (!restored) { answers = {}; currentQ = 0; secondsElapsed = 0; }
+
+  quizStarted = true;
+  showScreen('quiz');
+  document.getElementById('quiz-header-info').classList.remove('hidden');
+  document.getElementById('hdr-name').textContent = student.name.split(' ')[0];
+  document.getElementById('q-total').textContent  = QUESTIONS.length;
+
+  buildDotNav();
+  renderQuestion();
+  if (CONFIG.SHOW_TIMER) startTimer();
+}
+
+/* ============================================================
+   ⑦ RENDER QUESTION
+============================================================ */
+function renderQuestion() {
+  const q = QUESTIONS[currentQ];
+
+  /* Update meta */
+  document.getElementById('q-current').textContent = currentQ + 1;
+  document.getElementById('q-topic').textContent   = q.topic;
+  const pct = ((currentQ + 1) / QUESTIONS.length) * 100;
+  document.getElementById('progress-fill').style.width = pct + '%';
+
+  /* Type label */
+  const typeLabels = {
+    mcq:'📝 Multiple Choice', truefalse:'✅ True or False',
+    fillblank:'✏️ Fill in the Blank', typeanswer:'⌨️ Type the Answer', dragdrop:'🤏 Drag & Drop'
+  };
+  document.getElementById('q-type-label').textContent = typeLabels[q.type] || '📝';
+
+  /* Question text */
+  document.getElementById('question-text').innerHTML = q.question;
+
+  /* Input area */
+  const area = document.getElementById('question-input-area');
+  area.innerHTML = '';
+  document.getElementById('feedback-area').innerHTML = '';
+
+  const existing = answers[q.id];
+
+  switch(q.type) {
+    case 'mcq':       renderMCQ(q, area, existing);       break;
+    case 'truefalse': renderTF(q, area, existing);        break;
+    case 'fillblank': renderFillBlank(q, area, existing); break;
+    case 'typeanswer':renderTypeAnswer(q, area, existing);break;
+    case 'dragdrop':  renderDragDrop(q, area, existing);  break;
+  }
+
+  /* Show feedback if already answered */
+  if (existing) showFeedback(q, existing.correct, existing.value);
+
+  /* Button states */
+  updateNavButtons(q, existing);
+  updateDotNav();
+
+  /* Animate card */
+  const card = document.getElementById('question-card');
+  card.style.animation = 'none';
+  void card.offsetWidth;
+  card.style.animation = 'slideIn .35s ease both';
+
+  /* Auto-save */
+  if (CONFIG.AUTO_SAVE) saveProgress();
+}
+
+/* --- MCQ --- */
+function renderMCQ(q, area, existing) {
+  const list = document.createElement('div');
+  list.className = 'options-list';
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = `<div class="option-letter">${'ABCD'[i]}</div><div>${opt}</div>`;
+    if (existing) {
+      btn.disabled = true;
+      if (i === q.correct)             btn.classList.add('correct');
+      else if (i === existing.value)   btn.classList.add('wrong');
+    } else {
+      btn.onclick = () => { selectMCQ(q, i); };
+    }
+    list.appendChild(btn);
+  });
+  area.appendChild(list);
+}
+
+function selectMCQ(q, idx) {
+  if (answers[q.id]) return;
+  const correct = (idx === q.correct);
+  answers[q.id] = { value: idx, correct };
+  renderQuestion();
+}
+
+/* --- True/False --- */
+function renderTF(q, area, existing) {
+  const row = document.createElement('div');
+  row.className = 'tf-row';
+  [['true','✅','TRUE'],['false','❌','FALSE']].forEach(([val, icon, label]) => {
+    const btn = document.createElement('button');
+    btn.className = 'tf-btn';
+    btn.dataset.val = val;
+    btn.innerHTML = `<span class="tf-icon">${icon}</span>${label}`;
+    if (existing) {
+      btn.disabled = true;
+      const thisVal = (val === 'true');
+      if (thisVal === q.correct) btn.classList.add('correct');
+      else if (existing.value === thisVal && thisVal !== q.correct) btn.classList.add('wrong');
+    } else {
+      btn.onclick = () => {
+        const chosen = (val === 'true');
+        answers[q.id] = { value: chosen, correct: chosen === q.correct };
+        renderQuestion();
+      };
+    }
+    row.appendChild(btn);
+  });
+  area.appendChild(row);
+}
+
+/* --- Fill in Blank --- */
+function renderFillBlank(q, area, existing) {
+  const wrap = document.createElement('div');
+  wrap.className = 'fillblank-wrap';
+  const inp = document.createElement('input');
+  inp.type = 'text';
+  inp.className = 'fillblank-input';
+  inp.placeholder = 'Type your answer here…';
+  if (existing) {
+    inp.value = existing.value;
+    inp.disabled = true;
+    inp.classList.add(existing.correct ? 'correct' : 'wrong');
+    const icon = document.createElement('span');
+    icon.className = 'check-icon';
+    icon.textContent = existing.correct ? '✅' : '❌';
+    wrap.appendChild(icon);
+  } else {
+    inp.onkeydown = (e) => { if (e.key === 'Enter') submitAnswer(); };
+  }
+  wrap.appendChild(inp);
+  area.appendChild(wrap);
+}
+
+/* --- Type Answer --- */
+function renderTypeAnswer(q, area, existing) {
+  const ta = document.createElement('textarea');
+  ta.className = 'typeanswer-area';
+  ta.placeholder = 'Type your answer here…';
+  if (q.hint) {
+    const hint = document.createElement('div');
+    hint.className = 'hint-text';
+    hint.textContent = q.hint;
+    area.appendChild(hint);
+  }
+  if (existing) {
+    ta.value = existing.value;
+    ta.disabled = true;
+    ta.classList.add(existing.correct ? 'correct' : 'wrong');
+  }
+  area.appendChild(ta);
+}
+
+/* --- Drag & Drop (tap-to-select) --- */
+let ddState = {};   // { rowIndex: placedLabel }
+
+function renderDragDrop(q, area, existing) {
+  ddSelected = null;
+  ddState = existing ? JSON.parse(JSON.stringify(existing.value || {})) : {};
+  const container = document.createElement('div');
+  container.className = 'dragdrop-container';
+  container.id = 'dd-container';
+
+  /* Number display */
+  const numDisp = document.createElement('div');
+  numDisp.className = 'number-display';
+  numDisp.textContent = q.number;
+  container.appendChild(numDisp);
+
+  /* Target rows */
+  const targetsDiv = document.createElement('div');
+  targetsDiv.className = 'drag-targets';
+  targetsDiv.id = 'dd-targets';
+  q.rows.forEach((row, i) => {
+    const rowDiv = document.createElement('div');
+    rowDiv.className = 'drag-target-row' + (existing ? '' : '');
+    rowDiv.id = `dd-row-${i}`;
+
+    const dDigit = document.createElement('div');
+    dDigit.className = 'target-digit';
+    dDigit.textContent = row.digit;
+
+    const arrow = document.createElement('div');
+    arrow.style.cssText = 'font-size:1rem;color:var(--text3)';
+    arrow.textContent = '→';
+
+    const zone = document.createElement('div');
+    zone.className = 'target-drop-zone';
+    zone.id = `dd-zone-${i}`;
+    zone.textContent = ddState[i] || 'Tap a label, then tap here';
+
+    if (existing) {
+      const correct = row.place === ddState[i];
+      rowDiv.classList.add(correct ? 'correct' : 'wrong');
+      zone.textContent = ddState[i] || '—';
+    } else {
+      zone.onclick = () => ddDropOnZone(i, q);
+    }
+    if (ddState[i]) zone.classList.add('has-chip');
+
+    rowDiv.appendChild(dDigit);
+    rowDiv.appendChild(arrow);
+    rowDiv.appendChild(zone);
+    targetsDiv.appendChild(rowDiv);
+  });
+  container.appendChild(targetsDiv);
+
+  /* Labels to pick */
+  if (!existing) {
+    const labelsDiv = document.createElement('div');
+    labelsDiv.className = 'drag-labels';
+    labelsDiv.id = 'dd-labels';
+    const usedLabels = Object.values(ddState);
+    q.labels.forEach(label => {
+      const chip = document.createElement('div');
+      chip.className = 'drag-chip' + (usedLabels.includes(label) ? ' used' : '');
+      chip.id = `chip-${label.replace(/\s/g,'_')}`;
+      chip.textContent = label;
+      chip.onclick = () => ddSelectChip(label, chip, q);
+      labelsDiv.appendChild(chip);
+    });
+    container.appendChild(labelsDiv);
+  }
+
+  area.appendChild(container);
+}
+
+function ddSelectChip(label, chipEl, q) {
+  /* Deselect previous */
+  document.querySelectorAll('.drag-chip.selected').forEach(c => c.classList.remove('selected'));
+  if (ddSelected === label) { ddSelected = null; return; }
+  ddSelected = label;
+  chipEl.classList.add('selected');
+}
+
+function ddDropOnZone(rowIdx, q) {
+  if (!ddSelected) { showToast('👆 First tap a label below!'); return; }
+  const zone = document.getElementById(`dd-zone-${rowIdx}`);
+  /* If zone already has a label, put it back */
+  const prev = ddState[rowIdx];
+  if (prev) {
+    const prevChip = document.getElementById(`chip-${prev.replace(/\s/g,'_')}`);
+    if (prevChip) { prevChip.classList.remove('used','selected'); }
+  }
+  ddState[rowIdx] = ddSelected;
+  zone.textContent = ddSelected;
+  zone.classList.add('has-chip');
+
+  /* Mark chip as used */
+  const usedChip = document.getElementById(`chip-${ddSelected.replace(/\s/g,'_')}`);
+  if (usedChip) { usedChip.classList.remove('selected'); usedChip.classList.add('used'); }
+  ddSelected = null;
+  document.querySelectorAll('.drag-chip.selected').forEach(c => c.classList.remove('selected'));
+  saveProgress();
+}
+
+/* ============================================================
+   ⑧ SUBMIT ANSWER (Check button)
+============================================================ */
+function submitAnswer() {
+  const q = QUESTIONS[currentQ];
+  if (answers[q.id]) { nextQuestion(); return; }   // already answered → go next
+
+  let val, correct;
+
+  switch(q.type) {
+    case 'mcq':
+    case 'truefalse':
+      showToast('👆 Please select an option first!');
+      return;
+
+    case 'fillblank': {
+      const inp = document.querySelector('.fillblank-input');
+      val = (inp ? inp.value.trim() : '');
+      if (!val) { showToast('✏️ Please type your answer!'); return; }
+      correct = q.acceptedAnswers.some(a => a.toLowerCase() === val.toLowerCase());
+      break;
+    }
+    case 'typeanswer': {
+      const ta = document.querySelector('.typeanswer-area');
+      val = (ta ? ta.value.trim() : '');
+      if (!val) { showToast('⌨️ Please type your answer!'); return; }
+      correct = q.acceptedAnswers.some(a => normalize(a) === normalize(val));
+      break;
+    }
+    case 'dragdrop': {
+      if (Object.keys(ddState).length < q.rows.length) {
+        showToast('🤏 Please fill in all the slots first!');
+        return;
+      }
+      val = JSON.parse(JSON.stringify(ddState));
+      correct = q.rows.every((row, i) => ddState[i] === row.place);
+      break;
+    }
+  }
+
+  answers[q.id] = { value: val, correct };
+  renderQuestion();
+}
+
+function normalize(s) {
+  return s.toLowerCase().replace(/[\s,+]/g,'');
+}
+
+/* ============================================================
+   ⑨ NAVIGATION
+============================================================ */
+function nextQuestion() {
+  if (currentQ < QUESTIONS.length - 1) {
+    currentQ++;
+    renderQuestion();
+  } else {
+    /* Last question - check if all answered */
+    const unanswered = QUESTIONS.filter(q => !answers[q.id]).length;
+    if (unanswered > 0) {
+      if (confirm(`You have ${unanswered} unanswered question(s). Submit anyway?`)) showResults();
+    } else {
+      showResults();
+    }
+  }
+}
+
+function prevQuestion() {
+  if (currentQ > 0) { currentQ--; renderQuestion(); }
+}
+
+function updateNavButtons(q, existing) {
+  const btnPrev  = document.getElementById('btn-prev');
+  const btnCheck = document.getElementById('btn-check');
+  const btnNext  = document.getElementById('btn-next');
+  btnPrev.disabled  = currentQ === 0;
+  const isLast      = currentQ === QUESTIONS.length - 1;
+  btnNext.textContent = isLast ? 'Finish 🏁' : 'Next →';
+
+  if (existing) {
+    btnCheck.textContent = 'Next →';
+    btnCheck.onclick     = nextQuestion;
+  } else {
+    btnCheck.textContent = '✔ Check Answer';
+    btnCheck.onclick     = submitAnswer;
+  }
+}
+
+/* ============================================================
+   ⑩ FEEDBACK
+============================================================ */
+function showFeedback(q, correct, val) {
+  if (!CONFIG.INSTANT_FEEDBACK) return;
+  const area = document.getElementById('feedback-area');
+  const box  = document.createElement('div');
+  box.className = `feedback-box ${correct ? 'correct-fb' : 'wrong-fb'}`;
+  let wrongInfo = '';
+  if (!correct) {
+    if (q.type === 'mcq')      wrongInfo = `<br>Correct answer: <strong>${q.options[q.correct]}</strong>`;
+    if (q.type === 'truefalse')wrongInfo = `<br>Correct answer: <strong>${q.correct ? 'TRUE' : 'FALSE'}</strong>`;
+    if (q.type === 'fillblank' || q.type === 'typeanswer') wrongInfo = `<br>Correct answer: <strong>${q.displayAnswer}</strong>`;
+    if (q.type === 'dragdrop') wrongInfo = '';
+  }
+  box.innerHTML = `
+    <div class="fb-icon">${correct ? '🎉' : '😅'}</div>
+    <div class="fb-text">
+      <span class="fb-title">${correct ? 'Correct!' : 'Not quite!'}</span>
+      ${q.explanation || ''}${wrongInfo}
+    </div>`;
+  area.appendChild(box);
+}
+
+/* ============================================================
+   ⑪ DOT NAVIGATION
+============================================================ */
+function buildDotNav() {
+  const nav = document.getElementById('dot-nav');
+  nav.innerHTML = '';
+  QUESTIONS.forEach((_, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'dot-btn';
+    btn.textContent = i + 1;
+    btn.title = `Question ${i+1}`;
+    btn.onclick = () => { currentQ = i; renderQuestion(); };
+    nav.appendChild(btn);
+  });
+}
+
+function updateDotNav() {
+  document.querySelectorAll('.dot-btn').forEach((btn, i) => {
+    btn.classList.toggle('active', i === currentQ);
+    btn.classList.toggle('answered', !!answers[QUESTIONS[i]?.id]);
+  });
+  /* Update header score */
+  const answered = Object.values(answers).filter(a => a.correct).length;
+  document.getElementById('hdr-score').textContent = `${answered}/${QUESTIONS.length}`;
+}
+
+/* ============================================================
+   ⑫ TIMER
+============================================================ */
+function startTimer() {
+  clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    secondsElapsed++;
+    const remaining = CONFIG.TOTAL_SECONDS - secondsElapsed;
+    if (remaining <= 0) { clearInterval(timerInterval); showResults(); return; }
+    const m = String(Math.floor(remaining / 60)).padStart(2,'0');
+    const s = String(remaining % 60).padStart(2,'0');
+    document.getElementById('hdr-timer').textContent = `${m}:${s}`;
+    const badge = document.getElementById('timer-badge');
+    badge.classList.toggle('warning', remaining < 5 * 60);
+    if (CONFIG.AUTO_SAVE && secondsElapsed % 15 === 0) saveProgress();
+  }, 1000);
+}
+
+function formatTime(sec) {
+  const m = Math.floor(sec / 60), s = sec % 60;
+  return `${m}m ${s}s`;
+}
+
+/* ============================================================
+   ⑬ AUTO-SAVE / LOAD
+============================================================ */
+function saveProgress() {
+  if (!CONFIG.AUTO_SAVE) return;
+  try {
+    localStorage.setItem(CONFIG.LOCAL_STORAGE_KEY, JSON.stringify({
+      student, answers, currentQ, secondsElapsed
+    }));
+  } catch(e) { /* quota exceeded */ }
+}
+
+function clearSavedProgress() {
+  localStorage.removeItem(CONFIG.LOCAL_STORAGE_KEY);
+}
+
+/* ============================================================
+   ⑭ SHOW RESULTS
+============================================================ */
+function showResults() {
+  clearInterval(timerInterval);
+  showScreen('results');
+  document.getElementById('quiz-header-info').classList.add('hidden');
+  if (CONFIG.AUTO_SAVE) clearSavedProgress();
+
+  const total    = QUESTIONS.length;
+  const correct  = QUESTIONS.filter(q => answers[q.id]?.correct).length;
+  const wrong    = QUESTIONS.filter(q => answers[q.id] && !answers[q.id].correct).length;
+  const skipped  = total - correct - wrong;
+  const pct      = Math.round((correct / total) * 100);
+
+  /* Animate score ring */
+  const deg = (pct / 100) * 360;
+  document.getElementById('score-ring').style.background =
+    `conic-gradient(var(--primary) ${deg}deg, var(--bg2) ${deg}deg)`;
+  document.getElementById('score-pct').textContent = pct + '%';
+
+  /* Encouragement */
+  let title, msg;
+  if (pct >= 90)     { title = '🏆 Outstanding!';    msg = 'You are a Place Value champion! Absolutely brilliant work!'; }
+  else if (pct >= 75){ title = '🌟 Excellent!';      msg = 'Great performance! You clearly understand place values very well.'; }
+  else if (pct >= 60){ title = '👍 Good Work!';      msg = 'Solid effort! A little more practice and you\'ll ace it next time.'; }
+  else if (pct >= 40){ title = '📚 Keep Practising!';msg = 'You\'re on the right track! Review the explanations and try again.'; }
+  else               { title = '💪 Don\'t Give Up!'; msg = 'Place values can be tricky. Study the concepts and retry — you\'ve got this!'; }
+
+  document.getElementById('result-title').textContent = title;
+  document.getElementById('result-msg').textContent   = msg;
+  document.getElementById('res-correct').textContent  = correct;
+  document.getElementById('res-wrong').textContent    = wrong;
+  document.getElementById('res-skipped').textContent  = skipped;
+  document.getElementById('res-time').textContent     = formatTime(secondsElapsed);
+
+  /* Show/hide setup instructions */
+  document.getElementById('setup-instructions').classList.toggle('hidden', !!CONFIG.APPS_SCRIPT_URL);
+
+  /* Answer review */
+  buildReviewList();
+
+  /* Confetti if high score */
+  if (pct >= 75) launchConfetti();
+}
+
+function buildReviewList() {
+  const list = document.getElementById('review-list');
+  list.innerHTML = '';
+  QUESTIONS.forEach(q => {
+    const ans = answers[q.id];
+    const item = document.createElement('div');
+    item.className = `review-item ${!ans ? '' : ans.correct ? 'correct-item' : 'wrong-item'}`;
+
+    let qText = q.question.replace(/<[^>]+>/g,''); // strip HTML
+    if (qText.length > 100) qText = qText.slice(0,100) + '…';
+
+    let ansText = '—';
+    if (ans) {
+      if (q.type === 'mcq')       ansText = q.options[ans.value] || '—';
+      else if (q.type === 'truefalse') ansText = ans.value ? 'TRUE' : 'FALSE';
+      else if (q.type === 'dragdrop') ansText = Object.values(ans.value || {}).join(', ');
+      else ansText = ans.value || '—';
+    }
+
+    let correctText = '—';
+    if (q.type === 'mcq')       correctText = q.options[q.correct];
+    else if (q.type === 'truefalse') correctText = q.correct ? 'TRUE' : 'FALSE';
+    else if (q.type === 'fillblank' || q.type === 'typeanswer') correctText = q.displayAnswer;
+    else if (q.type === 'dragdrop') correctText = q.rows.map(r => r.place).join(', ');
+
+    const badge = !ans ? 'Skipped' : ans.correct ? '✅ Correct' : '❌ Wrong';
+    const badgeClass = !ans ? '' : ans.correct ? 'correct-item' : 'wrong-item';
+
+    item.innerHTML = `
+      <div class="ri-header">
+        <div class="ri-q">Q${q.id}. ${qText}</div>
+        <div class="ri-badge">${badge}</div>
+      </div>
+      <div class="ri-answers">
+        Your answer: <span>${ansText}</span>
+        ${!ans || ans.correct ? '' : ` &nbsp;|&nbsp; Correct: <span style="color:var(--success)">${correctText}</span>`}
+      </div>`;
+    list.appendChild(item);
+  });
+}
+
+/* ============================================================
+   ⑮ GOOGLE SHEETS SUBMISSION
+============================================================ */
+async function submitToSheets() {
+  if (!CONFIG.APPS_SCRIPT_URL) {
+    showToast('⚠️ Google Sheets URL not configured! See setup instructions above.');
+    return;
+  }
+
+  const btn = document.getElementById('btn-submit');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Submitting…';
+
+  const total   = QUESTIONS.length;
+  const correct = QUESTIONS.filter(q => answers[q.id]?.correct).length;
+  const pct     = Math.round((correct / total) * 100);
+
+  /* Build row data */
+  const row = [
+    new Date().toLocaleString('en-IN'),  // Timestamp
+    student.name,
+    student.school,
+    student.cls,
+    student.roll,
+    correct,
+    total,
+    pct + '%',
+    formatTime(secondsElapsed),
+    ...QUESTIONS.map(q => {
+      const ans = answers[q.id];
+      if (!ans) return 'Skipped';
+      if (q.type === 'mcq') return q.options[ans.value];
+      if (q.type === 'truefalse') return ans.value ? 'TRUE' : 'FALSE';
+      if (q.type === 'dragdrop') return JSON.stringify(ans.value);
+      return String(ans.value);
+    }),
+    ...QUESTIONS.map(q => {
+      const ans = answers[q.id];
+      if (!ans) return '';
+      return ans.correct ? 'Correct' : 'Wrong';
+    }),
+  ];
+
+  try {
+    const res = await fetch(CONFIG.APPS_SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',   // Apps Script requires no-cors from browser
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ row, student, correct, total, pct, time: formatTime(secondsElapsed) }),
+    });
+    /* no-cors mode means we can't read the response, but if no error was thrown it likely succeeded */
+    showThankYou(correct, total, pct);
+  } catch(err) {
+    btn.disabled = false;
+    btn.innerHTML = '📤 Submit to Google Sheets';
+    showToast('❌ Submission failed. Check your internet connection and try again.');
+    console.error('Sheets error:', err);
+  }
+}
+
+function showThankYou(correct, total, pct) {
+  showScreen('thankyou');
+  launchConfetti();
+  document.getElementById('ty-details').innerHTML = `
+    <div>👤 Name: <span>${student.name}</span></div>
+    <div>🏫 School: <span>${student.school}</span></div>
+    <div>📚 Class: <span>${student.cls}</span></div>
+    <div>🔢 Roll No: <span>${student.roll}</span></div>
+    <div>🏆 Score: <span>${correct}/${total} (${pct}%)</span></div>
+    <div>⏱ Time: <span>${formatTime(secondsElapsed)}</span></div>`;
+}
+
+/* ============================================================
+   ⑯ DOWNLOAD CSV (opens in Excel)
+============================================================ */
+function downloadCSV() {
+  const total   = QUESTIONS.length;
+  const correct = QUESTIONS.filter(q => answers[q.id]?.correct).length;
+  const pct     = Math.round((correct / total) * 100);
+
+  const headerRow = ['Timestamp','Name','School','Class','Roll No','Score','Total','Percentage','Time Taken',
+    ...QUESTIONS.map(q => `Q${q.id} Answer`),
+    ...QUESTIONS.map(q => `Q${q.id} Result`)
+  ];
+
+  const dataRow = [
+    new Date().toLocaleString('en-IN'),
+    student.name, student.school, student.cls, student.roll,
+    correct, total, pct+'%', formatTime(secondsElapsed),
+    ...QUESTIONS.map(q => {
+      const ans = answers[q.id];
+      if (!ans) return 'Skipped';
+      if (q.type === 'mcq') return q.options[ans.value];
+      if (q.type === 'truefalse') return ans.value ? 'TRUE' : 'FALSE';
+      if (q.type === 'dragdrop') return Object.entries(ans.value||{}).map(([i,v])=>v).join(' | ');
+      return String(ans.value);
+    }),
+    ...QUESTIONS.map(q => {
+      const ans = answers[q.id];
+      if (!ans) return 'Skipped';
+      return ans.correct ? 'Correct' : 'Wrong';
+    })
+  ];
+
+  const csv = [headerRow, dataRow].map(r =>
+    r.map(cell => `"${String(cell).replace(/"/g,'""')}"`).join(',')
+  ).join('\r\n');
+
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url;
+  a.download = `QuizReport_${student.name.replace(/\s+/g,'_')}_${Date.now()}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('⬇️ Report downloaded!');
+}
+
+/* ============================================================
+   ⑰ RESTART
+============================================================ */
+function restartQuiz() {
+  if (!confirm('Are you sure you want to restart? All progress will be lost.')) return;
+  clearInterval(timerInterval);
+  clearSavedProgress();
+  answers = {}; currentQ = 0; secondsElapsed = 0; quizStarted = false;
+  ddState = {}; ddSelected = null;
+  document.getElementById('quiz-header-info').classList.add('hidden');
+  showScreen('intro');
+}
+
+/* ============================================================
+   ⑱ CONFETTI
+============================================================ */
+function launchConfetti() {
+  const container = document.getElementById('confetti-container');
+  container.innerHTML = '';
+  const colors = ['#6366f1','#f97316','#fbbf24','#10b981','#8b5cf6','#ef4444','#3b82f6'];
+  for (let i = 0; i < 80; i++) {
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    const x = Math.random() * 100;
+    const delay = Math.random() * 3;
+    const dur = 2 + Math.random() * 3;
+    const size = 6 + Math.random() * 10;
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    const shape = Math.random() > 0.5 ? '50%' : '0';
+    piece.style.cssText = `
+      left:${x}%; top:-20px;
+      width:${size}px; height:${size}px;
+      background:${color}; border-radius:${shape};
+      animation-duration:${dur}s; animation-delay:${delay}s;
+    `;
+    container.appendChild(piece);
+  }
+  setTimeout(() => container.innerHTML = '', 6000);
+}
+
+/* ============================================================
+   ⑲ UTILITY HELPERS
+============================================================ */
+function showScreen(name) {
+  ['intro','quiz','results','thankyou'].forEach(s => {
+    document.getElementById(`screen-${s}`).classList.toggle('hidden', s !== name);
+  });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function v(id) { return document.getElementById(id)?.value || ''; }
+
+let _toastTimer;
+function showToast(msg, duration=3000) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(() => t.classList.remove('show'), duration);
+}
+
+/* ============================================================
+   ⑳ INIT
+============================================================ */
+(function init() {
+  /* Check for saved theme preference */
+  const savedTheme = localStorage.getItem('pvfvTheme');
+  if (savedTheme) {
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    if (savedTheme === 'dark') {
+      document.querySelector('#theme-toggle .toggle-icon').textContent = '🌙';
+      document.getElementById('theme-label').textContent = 'Night Mode';
+    }
+  }
+
+  /* Override toggleTheme to also save preference */
+  const origToggle = toggleTheme;
+  window.toggleTheme = function() {
+    origToggle();
+    const theme = document.documentElement.getAttribute('data-theme');
+    localStorage.setItem('pvfvTheme', theme);
+  };
+})();
+
+</script>
+
+<!--
+╔══════════════════════════════════════════════════════════════╗
+║           GOOGLE APPS SCRIPT CODE                            ║
+║  Copy the code below into your Google Apps Script editor.    ║
+╚══════════════════════════════════════════════════════════════╝
+
+Steps:
+ 1. Open your Google Sheet (create a new one if needed).
+ 2. Go to Extensions → Apps Script.
+ 3. Delete any existing code and paste the code below.
+ 4. Click Save (Ctrl+S / Cmd+S).
+ 5. Click Deploy → New Deployment.
+ 6. Type: Web App
+ 7. Execute as: Me
+ 8. Who has access: Anyone
+ 9. Click Deploy. Authorize the app when prompted.
+10. Copy the Web App URL and paste it into CONFIG.APPS_SCRIPT_URL in this HTML file.
+
+─── APPS SCRIPT CODE (paste into editor) ────────────────────
+
+function doPost(e) {
+  try {
+    var ss      = SpreadsheetApp.getActiveSpreadsheet();
+    var sheetName = 'Quiz Responses';
+    var sheet   = ss.getSheetByName(sheetName);
+
+    // Create sheet + headers if it doesn't exist
+    if (!sheet) {
+      sheet = ss.insertSheet(sheetName);
+      var headers = ['Timestamp','Name','School','Class','Roll No',
+                     'Correct','Total','Percentage','Time Taken'];
+      for (var i = 1; i <= 20; i++) headers.push('Q' + i + ' Answer');
+      for (var j = 1; j <= 20; j++) headers.push('Q' + j + ' Result');
+      sheet.appendRow(headers);
+      sheet.getRange(1, 1, 1, headers.length)
+           .setBackground('#6366f1')
+           .setFontColor('#ffffff')
+           .setFontWeight('bold');
+    }
+
+    var data = JSON.parse(e.postData.contents);
+    sheet.appendRow(data.row);
+
+    return ContentService
+      .createTextOutput(JSON.stringify({ success: true }))
+      .setMimeType(ContentService.MimeType.JSON);
+
+  } catch (err) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ success: false, error: err.toString() }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+────────────────────────────────────────────────────────────-->
+
+</body>
+</html>
